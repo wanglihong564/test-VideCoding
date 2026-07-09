@@ -1,47 +1,66 @@
-# Prelaunch Test Audit
+# Prelaunch Test Audit Skill
 
-这是一个可复用的 AI Agent Skill，用于上线前测试、发布前审计、回归测试规划、安全检查和 Go/No-Go 上线决策。
+一个可复用的 Agent Skill，用于上线前发布就绪测试。
 
-它的重点不是“把所有地方都测一遍”，而是优先发现真正会影响上线的风险：资金、权限、数据、可用性、安全、回滚、监控和第三方集成。
+它可以帮助 Codex、Claude Code 和其他 AI coding agents 在项目上线前做结构化审计，重点关注：
 
-## 怎么安装
+- 功能正确性
+- 权限与访问控制风险
+- 数据安全
+- 安全审查
+- 回归测试
+- 部署准备度
+- 回滚安全
+- 依赖与供应链风险
+- `Go` / `Conditional Go` / `No Go` 上线决策
 
-克隆这个仓库后，把 `prelaunch-test-audit/` 目录复制到你的 AI Agent skills 目录即可。下面是常见 `.agents/skills` 目录的示例；如果你使用的是其他 Agent，请复制到它对应的 skills 目录。
+## 为什么需要它
 
-Windows PowerShell：
+AI coding agents 很擅长构建功能，但它们在修复某一个具体任务时，也可能不小心破坏已有流程。
 
-```powershell
-Copy-Item -Recurse .\prelaunch-test-audit "$env:USERPROFILE\.agents\skills\prelaunch-test-audit"
-```
+这个 skill 给 Agent 一套标准化的上线前审计流程：
 
-macOS / Linux：
+- 从只读审计模式开始
+- 识别高风险区域
+- 设计正常、边界、异常和滥用场景测试
+- 检查测试是真的验证业务结果，还是只验证了表面状态
+- 审查安全、部署、回滚和供应链风险
+- 输出最终的 `Go` / `Conditional Go` / `No Go` 决策
 
-```bash
-cp -R prelaunch-test-audit ~/.agents/skills/prelaunch-test-audit
-```
+## 安装
 
-复制完成后，重启你的 Agent，或按你的环境方式重新加载 skills。
+### Codex
 
-## 怎么使用
-
-在支持 skills 的 Agent 里可以这样说：
-
-```text
-Use $prelaunch-test-audit in read-only audit mode to check whether this project is ready to launch.
-```
-
-也可以用这些提示词：
-
-```text
-Use $prelaunch-test-audit to run a Go/No-Go launch review for this repo.
-```
+把 skill 文件夹复制到：
 
 ```text
-Use $prelaunch-test-audit to identify high-risk routes, weak tests, missing rollback checks, and launch blockers.
+<your-project>/.agents/skills/prelaunch-test-audit/
 ```
 
+调用：
+
 ```text
-Use $prelaunch-test-audit to design regression tests for the payment, permission, and data-write flows.
+Use $prelaunch-test-audit in read-only audit mode. Do not modify code.
+```
+
+### Claude Code
+
+把 skill 文件夹复制到：
+
+```text
+<your-project>/.claude/skills/prelaunch-test-audit/
+```
+
+调用：
+
+```text
+/prelaunch-test-audit
+```
+
+或者：
+
+```text
+Use the prelaunch-test-audit skill. Start with read-only audit. Do not modify code.
 ```
 
 ## 仓库结构
@@ -58,15 +77,6 @@ prelaunch-test-audit/
 ```
 
 仓库根目录里的 `README.md`、`LICENSE` 和 `examples/` 是给人看的说明和示例，不需要复制进 Agent skills 目录。
-
-## 这个 Skill 能做什么
-
-- 判断项目是否适合上线，并输出 `Go`、`Conditional Go` 或 `No Go`
-- 识别支付、订单、权限、数据写入、上传、导出、Webhook 等高风险路径
-- 检查测试是否只验证了 HTTP 200 或 `success: true`，而没有验证真实业务结果
-- 生成上线前审计报告、问题报告、回归测试设计和 Go/No-Go 决策
-- 检查环境变量、密钥、依赖锁文件、部署配置、回滚、监控和第三方集成
-- 使用只读静态扫描脚本辅助快速盘点项目结构
 
 ## 只读静态扫描
 
