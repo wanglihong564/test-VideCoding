@@ -1,43 +1,43 @@
-# Go/No-Go Decision
+# Go/No-Go 决策示例
 
-Decision: Conditional Go
-Date: 2026-07-09
-Reviewer: AI Agent using `$prelaunch-test-audit`
-Scope: API, checkout, deployment config, rollback, and observability readiness.
+决策：Conditional Go
+日期：2026-07-09
+审查者：使用 `$prelaunch-test-audit` 的 AI Agent
+范围：API、结账、部署配置、回滚和可观测性准备情况。
 
-## Gate Rules Applied
+## 已应用门禁规则
 
-- P0 unresolved? No
-- P1 unresolved and unaccepted? Yes
-- Core tests passing? Yes
-- Rollback viable? Yes
-- Backups verified? Not verified
-- Observability acceptable? Yes
-- Critical third-party paths acceptable? Partially
-- High-risk routes reviewed? Yes
-- Weak-test warnings resolved or accepted? Accepted for launch with follow-up
+- 是否存在未解决的 P0？否
+- 是否存在未解决且未接受的 P1？是
+- 核心测试是否通过？是
+- 回滚是否可行？是
+- 备份是否已验证？未验证
+- 可观测性是否可接受？是
+- 关键第三方路径是否可接受？部分可接受
+- 高风险路由是否已审查？是
+- 弱测试警告是否已修复或接受？已接受，上线后跟进
 
-## Rationale
+## 决策理由
 
-The project can launch only if the owner explicitly accepts the remaining P1 payment-webhook idempotency risk and assigns an immediate follow-up. The core suite passes, rollback is documented, and no P0 blocker was confirmed, but backup verification and provider retry behavior remain launch-time watch items.
+只有在负责人明确接受剩余的 P1 支付 Webhook 幂等性风险，并安排立即跟进时，项目才可以条件上线。核心测试已通过，回滚方案已有记录，未确认到 P0 阻塞问题；但备份验证和服务商重试行为仍是上线观察项。
 
-## Accepted Risks
+## 已接受风险
 
-| Severity | Finding | Owner | Mitigation | Follow-up |
+| 严重级别 | 问题 | 负责人 | 缓解措施 | 跟进项 |
 |---|---|---|---|---|
-| P1 High | Duplicate payment webhook handling lacks regression proof | Release owner | Monitor provider events and order ledger after launch | Add duplicate-event test before next release |
-| P2 Medium | Admin tests are status-heavy | Backend owner | Manual role check before launch | Add role/ownership assertions |
+| P1 High | 重复支付 Webhook 处理缺少回归证明 | 发布负责人 | 上线后监控服务商事件和订单流水 | 下个版本前增加重复事件测试 |
+| P2 Medium | 管理员测试过度依赖状态码断言 | 后端负责人 | 上线前人工检查角色权限 | 增加角色/归属断言 |
 
-## Required Before Launch
+## 上线前必须完成
 
-- Confirm backup timestamp and restore owner.
-- Confirm alert destination for payment failures.
-- Record explicit acceptance of the P1 webhook risk.
+- 确认备份时间点和恢复负责人。
+- 确认支付失败告警接收目标。
+- 记录对 P1 Webhook 风险的明确接受。
 
-## Immediate Rollback Plan
+## 即时回滚计划
 
-- Trigger: Payment mismatch, privilege issue, failed migration, or sustained error spike.
-- Owner: Release owner.
-- Steps: Revert deployment to previous version, pause payment webhook processing if needed, verify order ledger, notify support.
-- Data handling: Prefer forward-fix for payment records; do not run destructive migration rollback without database owner approval.
-- User communication: Notify affected users only after scope is confirmed.
+- 触发条件：支付金额不一致、权限问题、迁移失败或持续错误率升高。
+- 负责人：发布负责人。
+- 步骤：回退部署到上一版本；必要时暂停支付 Webhook 处理；核对订单流水；通知支持团队。
+- 数据处理：支付记录优先采用前向修复；没有数据库负责人批准，不执行破坏性迁移回滚。
+- 用户沟通：先确认影响范围，再通知受影响用户。

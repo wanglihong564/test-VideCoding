@@ -1,92 +1,92 @@
-# Prelaunch Audit Report
+# 上线前审计报告示例
 
-## Launch Decision
+## 上线决策
 
-Decision: Conditional Go
-Reason: No P0 blocker was confirmed, but one P1 payment-webhook risk needs an owner, mitigation, and rollback watch before launch.
-Gate rule applied: Conditional Go because unresolved P1 risk is bounded and can be explicitly accepted.
+决策：Conditional Go
+原因：没有确认到 P0 阻塞问题，但仍有一个 P1 支付 Webhook 风险，需要在上线前明确负责人、缓解措施和回滚观察方案。
+适用门禁规则：未解决的 P1 风险边界清楚，且可以由负责人显式接受，因此为 Conditional Go。
 
-## Executive Summary
+## 摘要
 
-- Scope: Backend API, checkout flow, webhook handling, deployment config, and current regression tests.
-- Environment reviewed: Local repository and staging notes.
-- Highest risk areas: Payment webhook idempotency, admin authorization, rollback readiness.
-- Remaining unknowns: Production alert routing and payment provider retry history.
+- 审计范围：后端 API、结账流程、Webhook 处理、部署配置、现有回归测试。
+- 已审环境：本地仓库和测试环境说明。
+- 最高风险区域：支付 Webhook 幂等性、管理员权限校验、回滚准备。
+- 剩余未知项：生产告警路由、支付服务商重试历史。
 
-## Blockers
+## 阻塞问题
 
-| Severity | Area | Finding | Evidence | Recommended fix | Launch impact |
+| 严重级别 | 区域 | 问题 | 证据 | 建议修复 | 上线影响 |
 |---|---|---|---|---|---|
-| None | - | No P0 blocker confirmed | Static scan and targeted review | Continue monitoring unknowns | Does not block |
+| 无 | - | 未确认到 P0 阻塞问题 | 静态扫描和重点代码审查 | 继续跟踪未知项 | 不阻塞上线 |
 
-## High-Risk Findings
+## 高风险发现
 
-| Severity | Area | Finding | Evidence | Recommended fix | Launch impact |
+| 严重级别 | 区域 | 问题 | 证据 | 建议修复 | 上线影响 |
 |---|---|---|---|---|---|
-| P1 High | Money | Payment webhook handler does not clearly prove idempotency for duplicate provider events | `api/webhooks/payment.ts:42`, no duplicate-event regression test found | Add duplicate webhook test and enforce event-id uniqueness | Conditional launch risk |
-| P2 Medium | Permissions | Admin route tests assert only HTTP 200 | `tests/admin.spec.ts`, status-only assertion | Add role and ownership assertions | Follow-up accepted if admin access is manually verified |
+| P1 High | 资金 | 支付 Webhook 处理器没有明确证明重复服务商事件的幂等性 | `api/webhooks/payment.ts:42`，未发现重复事件回归测试 | 增加重复 Webhook 测试，并强制事件 ID 唯一 | 条件上线风险 |
+| P2 Medium | 权限 | 管理员路由测试只断言 HTTP 200 | `tests/admin.spec.ts`，只有状态码断言 | 增加角色和数据归属断言 | 如果管理员访问已人工验证，可作为上线后跟进 |
 
-## Tests Run
+## 已运行测试
 
-| Command | Result | Notes |
+| 命令 | 结果 | 说明 |
 |---|---|---|
-| `npm run test` | Passed | Existing suite passed locally |
-| `python prelaunch-test-audit/scripts/prelaunch_static_scan.py .` | Passed | Produced route, test, config, and security surface inventory |
+| `npm run test` | 通过 | 现有测试套件本地通过 |
+| `python prelaunch-test-audit/scripts/prelaunch_static_scan.py .` | 通过 | 生成了路由、测试、配置和安全面清单 |
 
-## Route And Security Surface
+## 路由与安全面
 
-Frameworks detected:
+检测到的框架：
 
 - Express/Fastify-style routing
 - Next.js API Routes
 
-High-risk routes:
+高风险路由：
 
 - `POST /api/webhooks/payment`
 - `PATCH /api/admin/users/:id`
 - `POST /api/orders`
 
-Security/auth-related files:
+安全/认证相关文件：
 
 - `src/middleware/auth.ts`
 - `src/admin/permissions.ts`
 
-Weak-test warnings:
+弱测试提示：
 
-- `tests/admin.spec.ts`: only HTTP status assertions
+- `tests/admin.spec.ts`：只断言 HTTP 状态码
 
-## Supply Chain Checks
+## 供应链检查
 
-| Check | Result | Notes |
+| 检查项 | 结果 | 说明 |
 |---|---|---|
-| Lockfile | Present | `package-lock.json` exists |
-| Dependency audit | Not run | Requires explicit approval and network access |
-| Docker review | Not applicable | No Dockerfile detected |
+| 锁文件 | 存在 | `package-lock.json` 存在 |
+| 依赖审计 | 未运行 | 需要明确授权和网络访问 |
+| Docker 检查 | 不适用 | 未检测到 Dockerfile |
 
-## Coverage Notes
+## 覆盖范围说明
 
-Covered:
+已覆盖：
 
-- Checkout happy path
-- Admin auth middleware review
-- Static route inventory
-- Basic deployment config review
+- 结账正常路径
+- 管理员认证中间件审查
+- 静态路由清单
+- 基础部署配置审查
 
-Not covered:
+未覆盖：
 
-- Production payment provider dashboard retry behavior
-- Alert routing verification
+- 生产支付服务商后台的重试行为
+- 告警路由验证
 
-Manual checks still needed:
+仍需人工确认：
 
-- Confirm rollback owner and rollback trigger
-- Confirm production alert destination
+- 确认回滚负责人和回滚触发条件
+- 确认生产告警接收目标
 
-## Fix Plan
+## 修复计划
 
-Only include proposed fixes here. Wait for user confirmation before editing code.
+这里只放建议修复方案。修改代码前应等待用户确认。
 
-- Add duplicate payment webhook regression test.
-- Add admin ownership and role tests.
-- Confirm rollback owner before launch.
+- 增加重复支付 Webhook 回归测试。
+- 增加管理员归属和角色测试。
+- 上线前确认回滚负责人。
 
