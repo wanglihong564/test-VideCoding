@@ -1,12 +1,12 @@
-# Prelaunch Test Audit Skill
+# Prelaunch Test Audit
 
-这是一个可复用的 Codex Skill，用于上线前测试、发布前审计、回归测试规划、安全检查和 Go/No-Go 上线决策。
+这是一个可复用的 AI Agent Skill，用于上线前测试、发布前审计、回归测试规划、安全检查和 Go/No-Go 上线决策。
 
 它的重点不是“把所有地方都测一遍”，而是优先发现真正会影响上线的风险：资金、权限、数据、可用性、安全、回滚、监控和第三方集成。
 
 ## 怎么安装
 
-克隆这个仓库后，把 `prelaunch-test-audit/` 目录复制到你的 Codex skills 目录即可。
+克隆这个仓库后，把 `prelaunch-test-audit/` 目录复制到你的 AI Agent skills 目录即可。下面是常见 `.agents/skills` 目录的示例；如果你使用的是其他 Agent，请复制到它对应的 skills 目录。
 
 Windows PowerShell：
 
@@ -20,11 +20,11 @@ macOS / Linux：
 cp -R prelaunch-test-audit ~/.agents/skills/prelaunch-test-audit
 ```
 
-复制完成后，重启 Codex，或按你的环境方式重新加载 skills。
+复制完成后，重启你的 Agent，或按你的环境方式重新加载 skills。
 
 ## 怎么使用
 
-在 Codex 里可以这样说：
+在支持 skills 的 Agent 里可以这样说：
 
 ```text
 Use $prelaunch-test-audit in read-only audit mode to check whether this project is ready to launch.
@@ -57,7 +57,7 @@ prelaunch-test-audit/
   scripts/prelaunch_static_scan.py
 ```
 
-仓库根目录里的 `README.md`、`LICENSE` 和 `examples/` 是给人看的说明和示例，不需要复制进 Codex skills 目录。
+仓库根目录里的 `README.md`、`LICENSE` 和 `examples/` 是给人看的说明和示例，不需要复制进 Agent skills 目录。
 
 ## 这个 Skill 能做什么
 

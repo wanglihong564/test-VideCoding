@@ -2,7 +2,7 @@
 
 Decision: Conditional Go
 Date: 2026-07-09
-Reviewer: Codex using `$prelaunch-test-audit`
+Reviewer: AI Agent using `$prelaunch-test-audit`
 Scope: API, checkout, deployment config, rollback, and observability readiness.
 
 ## Gate Rules Applied
@@ -41,4 +41,3 @@ The project can launch only if the owner explicitly accepts the remaining P1 pay
 - Steps: Revert deployment to previous version, pause payment webhook processing if needed, verify order ledger, notify support.
 - Data handling: Prefer forward-fix for payment records; do not run destructive migration rollback without database owner approval.
 - User communication: Notify affected users only after scope is confirmed.
-
