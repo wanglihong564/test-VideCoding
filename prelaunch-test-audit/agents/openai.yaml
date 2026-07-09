@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prelaunch Test Audit"
+  short_description: "Release-readiness testing focused on real launch risk."
+  default_prompt: "Use $prelaunch-test-audit in read-only audit mode to check whether this project is ready to launch."
